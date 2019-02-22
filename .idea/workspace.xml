@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="079e0830-b3ab-4548-b4fe-b45fe3b1e85b" name="Default Changelist" comment="" />
+    <list default="true" id="079e0830-b3ab-4548-b4fe-b45fe3b1e85b" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/db_manager.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/db_manager.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/tasks/db_manager_tasks.rake" beforeDir="false" afterPath="$PROJECT_DIR$/lib/tasks/db_manager_tasks.rake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rails_app/Gemfile" beforeDir="false" afterPath="$PROJECT_DIR$/../rails_app/Gemfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rails_app/Gemfile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../rails_app/Gemfile.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rails_app/config/initializers/session_store.rb" beforeDir="false" afterPath="$PROJECT_DIR$/../rails_app/config/initializers/session_store.rb" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -13,8 +21,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/tasks/db_manager_tasks.rake">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="887">
-              <caret line="121" column="3" lean-forward="true" selection-start-line="121" selection-start-column="3" selection-end-line="121" selection-end-column="3" />
+            <state relative-caret-position="739">
+              <caret line="304" lean-forward="true" selection-start-line="304" selection-end-line="304" />
             </state>
           </provider>
         </entry>
@@ -33,6 +41,15 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="60">
               <caret line="4" column="3" selection-start-line="4" selection-start-column="3" selection-end-line="4" selection-end-column="3" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../rails_app/Gemfile">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="270">
+              <caret line="18" column="78" selection-start-line="18" selection-start-column="1" selection-end-line="18" selection-end-column="78" />
             </state>
           </provider>
         </entry>
@@ -61,7 +78,12 @@
     <findStrings>
       <find>tmp</find>
       <find>env</find>
+      <find>reset_schema</find>
+      <find>dotenv</find>
     </findStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -74,12 +96,13 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="1680" />
-    <option name="y" value="-42" />
-    <option name="width" value="2463" />
-    <option name="height" value="1176" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="1681" />
+    <option name="y" value="-439" />
+    <option name="width" value="1600" />
+    <option name="height" value="1023" />
   </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <autoscrollFromSource ProjectPane="true" />
@@ -102,19 +125,23 @@
               <item name="db_manager" type="b2602c69:ProjectViewProjectNode" />
               <item name="db_manager" type="462c0819:PsiDirectoryNode" />
               <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="db_manager" type="462c0819:PsiDirectoryNode" />
+              <item name="tasks" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="db_manager" type="b2602c69:ProjectViewProjectNode" />
-              <item name="db_manager" type="462c0819:PsiDirectoryNode" />
+              <item name="rails_app" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="db_manager" type="b2602c69:ProjectViewProjectNode" />
+              <item name="rails_app" type="462c0819:PsiDirectoryNode" />
               <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="tasks" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
       <pane id="Scope" />
+      <pane id="RailsProjectView" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -122,6 +149,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="project.settings.patched" value="true" />
     <property name="settings.editor.selected.configurable" value="configurable.group.appearance" />
   </component>
   <component name="RunDashboard">
@@ -149,17 +177,20 @@
       <updated>1548265963238</updated>
       <workItem from="1548265964620" duration="9226000" />
       <workItem from="1548435607073" duration="16550000" />
+      <workItem from="1549921986481" duration="5878000" />
+      <workItem from="1549992354211" duration="5207000" />
+      <workItem from="1550855028528" duration="1383000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="25776000" />
+    <option name="totallyTimeSpent" value="38244000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1680" y="-42" width="2463" height="1176" extended-state="0" />
+    <frame x="1682" y="-439" width="2556" height="1577" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.26311442" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.17501989" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -172,7 +203,7 @@
       <window_info anchor="bottom" id="Docker" order="7" />
       <window_info anchor="bottom" id="Database Changes" order="8" />
       <window_info anchor="bottom" id="Version Control" order="9" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.40339303" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.2366621" />
       <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
       <window_info anchor="bottom" id="Messages" order="12" weight="0.32973805" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
@@ -185,10 +216,31 @@
     <option name="version" value="1" />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/lib/tasks/db_manager_tasks.rake">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="739">
+          <caret line="304" lean-forward="true" selection-start-line="304" selection-end-line="304" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/db_manager.gemspec">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="345">
+          <caret line="23" selection-start-line="23" selection-end-line="23" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/lib/db_manager/railtie.rb">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
           <caret line="4" column="3" selection-start-line="4" selection-start-column="3" selection-end-line="4" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../rails_app/Gemfile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="18" column="78" selection-start-line="18" selection-start-column="1" selection-end-line="18" selection-end-column="78" />
         </state>
       </provider>
     </entry>
@@ -203,20 +255,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="15">
           <caret line="1" column="12" selection-start-line="1" selection-start-column="12" selection-end-line="1" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/db_manager.gemspec">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
-          <caret line="23" selection-start-line="23" selection-end-line="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/tasks/db_manager_tasks.rake">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="887">
-          <caret line="121" column="3" lean-forward="true" selection-start-line="121" selection-start-column="3" selection-end-line="121" selection-end-column="3" />
         </state>
       </provider>
     </entry>

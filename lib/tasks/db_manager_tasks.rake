@@ -5,15 +5,22 @@ namespace :db do
 
   task :create_environments,  [:admin, :app] => [:environment, :dotenv] do |t, args|
     Rails.logger = Logger.new(STDOUT)
-    Rails.logger.info("db:create_user")
+    Rails.logger.info("db:create_environments")
 
     admin = args.admin
     app = args.app
-    env = args.env
-    # user = "uss_#{args.app}_#{env}"
-    # database = "uss_#{args.app}_#{env}"
 
     create_environments(admin, app)
+  end
+
+  task :destroy_environments, [:admin, :app] => [:environment, :dotenv] do |t, args|
+    Rails.logger = Logger.new(STDOUT)
+    Rails.logger.info("db:destroy_environments")
+
+    admin = args.admin
+    app = args.app
+
+    destroy_environments(admin, app)
   end
 
 
@@ -39,33 +46,22 @@ namespace :db do
     create_database(admin, user, database)
     create_schema(admin, user, database)
 
-    Rake['db:migrate'].invoke
+    #Rake['db:migrate'].invoke
 
   end
 
-  # task :reset_schema, [:app, :env] do |t, args|
-  #   Rails.logger = Logger.new(STDOUT)
-  #   Rails.logger.info("DB:: reset_schema")
-  #
-  #   database = "uss_#{args.app}_#{args.env}"
-  #   user = "uss_#{args.app}_#{args.env}"
-  #
-  #   Rails.logger.info("-----------------------")
-  #
-  #   puts "DROP SCHEMA IF EXISTS uss CASCADE;"
-  #   puts "CREATE SCHEMA uss;"
-  #   puts "GRANT ALL PRIVILEGES ON SCHEMA uss TO #{user};"
-  #   puts "ALTER DEFAULT PRIVILEGES IN SCHEMA uss GRANT SELECT,INSERT,UPDATE,DELETE ON TABLES TO #{user};"
-  #   puts "GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA uss TO #{user};"
-  #
-  #   # puts "GRANT USAGE ON SCHEMA uss to #{user}_reader;"
-  #   # puts "GRANT SELECT ON ALL TABLES IN SCHEMA uss TO #{user}_reader;"
-  #   # puts "GRANT SELECT ON ALL SEQUENCES IN SCHEMA uss TO #{user}_reader;"
-  #   # puts "ALTER DEFAULT PRIVILEGES IN SCHEMA uss GRANT SELECT ON TABLES TO #{user}_reader;"
-  #   # puts "ALTER DEFAULT PRIVILEGES IN SCHEMA uss GRANT SELECT ON SEQUENCES TO #{user}_reader;"
-  #
-  #   Rails.logger.info("-----------------------")
-  # end
+  task :reset_schema, [:admin, :app, :env] do |t, args|
+    Rails.logger = Logger.new(STDOUT)
+    Rails.logger.info("DB:: reset_schema: admin: #{args.admin}, app: #{args.app}, env: #{args.env}")
+
+    admin = args.admin
+    user = "uss_#{args.app}_#{args.env}"
+    Rails.logger.info("DB:: reset_schema: user: #{user}")
+    database = "uss_#{args.app}_#{args.env}"
+    backup_file = "~/tmp/#{database}_backup.db"
+
+    reset_schema(admin, user, database, backup_file)
+  end
   #
   # task :sync_db_test, [:app,:env] do |t, args|
   #   Rails.logger = Logger.new(STDOUT)
@@ -122,8 +118,7 @@ namespace :db do
   #
 
   def create_environments(admin, app)
-    # pwd = SecureRandom.hex(12)
-    # `psql -U #{admin}  -d postgres -tc "SELECT 1 FROM pg_user WHERE usename = '#{user}'" | grep -q 1 || psql -U #{admin}  -d postgres -c "CREATE USER #{user} WITH ENCRYPTED PASSWORD '#{pwd}'"`
+    Rails.logger.info("db:create_environments")
 
     dev = OpenStruct.new ({ shell_name: "Novel", database: "", user: "", pwd: "", } )
     test = OpenStruct.new ({ shell_name: "Grass", database: "", user: "", pwd: "", } )
@@ -201,10 +196,10 @@ namespace :db do
 
 
     # update database.yml file, set dev password
-    database = YAML.load(ERB.new(IO.read(File.join(Rails.root, "config", "database.yml"))).result)
-    puts "#{database["development"]["password"]}"
-    database["development"]["password"] = pwd
-    File.open(File.join(Rails.root, "config", "database.yml"), 'w') { |f| YAML.dump(database, f) }
+    # database = YAML.load(ERB.new(IO.read(File.join(Rails.root, "config", "database.yml"))).result)
+    # puts "#{database["development"]["password"]}"
+    # database["development"]["password"] = pwd
+    # File.open(File.join(Rails.root, "config", "../../#{app}/database.yml"), 'w') { |f| YAML.dump(database, f) }
 
 
     # update .database_profile
@@ -256,6 +251,8 @@ namespace :db do
 
   end
 
+
+
   def update_pgpass(admin, user, app, env)
 
   end
@@ -279,21 +276,47 @@ namespace :db do
     `psql -h localhost -U #{admin} -d postgres -c 'ALTER DATABASE #{database} SET SEARCH_PATH TO uss, public'`
   end
 
+  def destroy_environments(admin, app)
+
+    Rails.logger.info("db:destroy_environments")
+    dev = OpenStruct.new ({ shell_name: "Novel", database: "", user: "" } )
+    test = OpenStruct.new ({ shell_name: "Grass", database: "", user: ""} )
+    stage = OpenStruct.new ({ shell_name: "Ocean", database: "", user: ""} )
+    prod = OpenStruct.new ({ shell_name: "Red Sands", database: "", user: ""} )
+    environments = { dev: dev, test: test, stage: stage, prod: prod }
+
+    # setup envionment conventions
+    environments.each do |key, e|
+      e.database = "uss_#{app}_#{key}"
+      e.user = "uss_#{app}_#{key}"
+    end
+
+    #drop
+    environments.each do |key,e|
+
+      # Drop schema
+      #`psql -U #{admin}  -d postgres -c "DROP SCHEMA uss IF EXISTS"`
+
+      # Drop database
+      `psql -U #{admin}  -d postgres -c "DROP DATABASE IF EXISTS #{e.database} "`
+
+      # Drop user
+      `psql -U #{admin}  -d postgres -tc "SELECT 1 FROM pg_user WHERE usename = '#{e.user}'" | grep -q 1 || psql -U #{admin}  -d postgres -c "DROP USER #{e.user} "`
+
+    end
+
+  end
+
   def reset_schema(admin, user, database, backup_file)
     Rails.logger = Logger.new(STDOUT)
-    Rails.logger.info("DB:: reset_local")
-
-    database = "uss_#{args.app}_#{args.env}"
-    user = "uss_#{args.app}_#{args.env}"
-    admin = "#{args.admin}"
+    Rails.logger.info("DB:: reset_schema: admin: #{admin}, user: #{user}, database: #{database}")
 
     Rails.logger.info("DB:: Drop Schema")
     `psql -h localhost -U#{user} -d #{database} -c 'DROP SCHEMA IF EXISTS uss CASCADE'`
-    Rails.logger.info("DB:: Create Schema")
 
     create_schema(admin, user, database)
 
-    # Rails.logger.info("DB:: Import: #{backup_file}")
+    Rails.logger.info("DB:: Import: #{backup_file}")
     `psql -h localhost -U #{user} #{database} < #{backup_file}`
 
   end
