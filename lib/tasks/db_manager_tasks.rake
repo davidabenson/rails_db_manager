@@ -2,6 +2,30 @@ require 'dotenv/tasks'
 require 'securerandom'
 
 namespace :db do
+  task :reset_schema_cmds, [:app, :env] do |t, args|
+    Rails.logger = Logger.new(STDOUT)
+    Rails.logger.info("DB:: reset_schema")
+
+    database = "uss_#{args.app}_#{args.env}"
+    user = "uss_#{args.app}_#{args.env}"
+
+    Rails.logger.info("-----------------------")
+
+    puts "DROP SCHEMA IF EXISTS uss CASCADE;"
+    puts "CREATE SCHEMA uss;"
+    puts "GRANT ALL PRIVILEGES ON SCHEMA uss TO #{user};"
+    puts "ALTER DEFAULT PRIVILEGES IN SCHEMA uss GRANT SELECT,INSERT,UPDATE,DELETE ON TABLES TO #{user};"
+    puts "GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA uss TO #{user};"
+    puts ""
+    puts "GRANT USAGE ON SCHEMA uss to #{user}_reader;"
+    puts "GRANT SELECT ON ALL TABLES IN SCHEMA uss TO #{user}_reader;"
+    puts "GRANT SELECT ON ALL SEQUENCES IN SCHEMA uss TO #{user}_reader;"
+    puts "ALTER DEFAULT PRIVILEGES IN SCHEMA uss GRANT SELECT ON TABLES TO #{user}_reader;"
+    puts "ALTER DEFAULT PRIVILEGES IN SCHEMA uss GRANT SELECT ON SEQUENCES TO #{user}_reader;"
+
+    Rails.logger.info("-----------------------")
+  end
+
 
   task :create_environments,  [:admin, :app] => [:environment, :dotenv] do |t, args|
     Rails.logger = Logger.new(STDOUT)
