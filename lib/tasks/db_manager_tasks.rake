@@ -27,7 +27,7 @@ namespace :db do
   end
 
 
-  task :create_environments,  [:admin, :app] => [:environment, :dotenv] do |t, args|
+  task :create_environments, [:admin, :app] => [:environment, :dotenv] do |t, args|
     Rails.logger = Logger.new(STDOUT)
     Rails.logger.info("db:create_environments")
 
@@ -73,6 +73,27 @@ namespace :db do
     #Rake['db:migrate'].invoke
 
   end
+
+
+  task :sync_prod_to_local, [:admin, :app, :env] do |t, args|
+    Rails.logger = Logger.new(STDOUT)
+    Rails.logger.info("DB:: sync_prod_to_local")
+
+    app = args.app
+    database = "uss_#{args.app}_#{args.env}"
+    user = "uss_#{args.app}_#{args.env}"
+    admin = args.admin
+    backup_file = "~/tmp/#{database}_backup.db"
+
+    # Get production data locally
+    Rails.logger.debug("Backup Production Database")
+
+    `pg_dump --no-owner --no-acl -Z0 --schema=uss -haurora-postgres-moderate-cluster-1.cluster-ccklrxkcenui.us-west-2.rds.amazonaws.com -Uuss_#{app}_prod uss_#{app}_prod > #{backup_file}`
+
+    # Clear out local postgres database
+    reset_schema(admin, user, database, backup_file)
+  end
+
 
   task :reset_schema, [:admin, :app, :env] do |t, args|
     Rails.logger = Logger.new(STDOUT)
@@ -144,11 +165,11 @@ namespace :db do
   def create_environments(admin, app)
     Rails.logger.info("db:create_environments")
 
-    dev = OpenStruct.new ({ shell_name: "Novel", database: "", user: "", pwd: "", } )
-    test = OpenStruct.new ({ shell_name: "Grass", database: "", user: "", pwd: "", } )
-    stage = OpenStruct.new ({ shell_name: "Ocean", database: "", user: "", pwd: "", } )
-    prod = OpenStruct.new ({ shell_name: "Red Sands", database: "", user: "", pwd: "", } )
-    environments = { dev: dev, test: test, stage: stage, prod: prod }
+    dev = OpenStruct.new ({shell_name: "Novel", database: "", user: "", pwd: "", })
+    test = OpenStruct.new ({shell_name: "Grass", database: "", user: "", pwd: "", })
+    stage = OpenStruct.new ({shell_name: "Ocean", database: "", user: "", pwd: "", })
+    prod = OpenStruct.new ({shell_name: "Red Sands", database: "", user: "", pwd: "", })
+    environments = {dev: dev, test: test, stage: stage, prod: prod}
 
     # setup envionment conventions
     environments.each do |key, e|
@@ -158,21 +179,21 @@ namespace :db do
     end
 
     #create users
-    environments.each do |key,e|
+    environments.each do |key, e|
       `psql -U #{admin}  -d postgres -tc "SELECT 1 FROM pg_user WHERE usename = '#{e.user}'" | grep -q 1 || psql -U #{admin}  -d postgres -c "CREATE USER #{e.user} WITH ENCRYPTED PASSWORD '#{e.pwd}'"`
     end
 
 
-    shell_envs ={"dev": "Novel", "test": "Grass", "stage": "Ocean", "prod": "Red Sands" }
+    shell_envs = {"dev": "Novel", "test": "Grass", "stage": "Ocean", "prod": "Red Sands"}
 
     # update .pgpqass with new passwords, if missing
-    `grep -q  "##{app}" ~/.pgpass` ; result=$?.success?
+    `grep -q  "##{app}" ~/.pgpass`; result = $?.success?
     if !result
       `echo "##{app}" >> ~/.pgpass`
 
       environments.each do |key, e|
         host = "localhost"
-        `grep -q  "#{host}:5432:#{e.user}:#{e.database}:" ~/.pgpass` ; result=$?.success?
+        `grep -q  "#{host}:5432:#{e.user}:#{e.database}:" ~/.pgpass`; result = $?.success?
         if !result
 
           `echo "#{host}:5432:#{e.user}:#{e.database}}:#{e.pwd}" >> ~/.pgpass`
@@ -187,7 +208,7 @@ namespace :db do
 
       environments.each do |key, e|
         host = "aurora-postgres-moderate-cluster-1.cluster-ccklrxkcenui.us-west-2.rds.amazonaws.com"
-        `grep -q  "#{host}:5432:#{e.user}:#{e.database}:" ~/.pgpass` ; result=$?.success?
+        `grep -q  "#{host}:5432:#{e.user}:#{e.database}:" ~/.pgpass`; result = $?.success?
         if !result
           `echo "#{host}:5432:#{e.user}:#{e.database}:UpdateWithAWSPassword" >> ~/.pgpass`
         end
@@ -228,7 +249,7 @@ namespace :db do
 
     # update .database_profile
     #
-    `grep -q  "##{app}" ~/.database_profile` ; result=$?.success?
+    `grep -q  "##{app}" ~/.database_profile`; result = $?.success?
     if !result
       alias_section = ["##{app}"]
       host = "localhost"
@@ -246,7 +267,7 @@ namespace :db do
         end
       end
 
-     `echo "#{alias_section.join("\n")}" >> ~/.database_profile`
+      `echo "#{alias_section.join("\n")}" >> ~/.database_profile`
     end
 
     # shell_envs ={"dev": "Novel", "test": "Grass", "stage": "Ocean", "prod": "Red Sands" }
@@ -276,7 +297,6 @@ namespace :db do
   end
 
 
-
   def update_pgpass(admin, user, app, env)
 
   end
@@ -303,11 +323,11 @@ namespace :db do
   def destroy_environments(admin, app)
 
     Rails.logger.info("db:destroy_environments")
-    dev = OpenStruct.new ({ shell_name: "Novel", database: "", user: "" } )
-    test = OpenStruct.new ({ shell_name: "Grass", database: "", user: ""} )
-    stage = OpenStruct.new ({ shell_name: "Ocean", database: "", user: ""} )
-    prod = OpenStruct.new ({ shell_name: "Red Sands", database: "", user: ""} )
-    environments = { dev: dev, test: test, stage: stage, prod: prod }
+    dev = OpenStruct.new ({shell_name: "Novel", database: "", user: ""})
+    test = OpenStruct.new ({shell_name: "Grass", database: "", user: ""})
+    stage = OpenStruct.new ({shell_name: "Ocean", database: "", user: ""})
+    prod = OpenStruct.new ({shell_name: "Red Sands", database: "", user: ""})
+    environments = {dev: dev, test: test, stage: stage, prod: prod}
 
     # setup envionment conventions
     environments.each do |key, e|
@@ -316,7 +336,7 @@ namespace :db do
     end
 
     #drop
-    environments.each do |key,e|
+    environments.each do |key, e|
 
       # Drop schema
       #`psql -U #{admin}  -d postgres -c "DROP SCHEMA uss IF EXISTS"`
