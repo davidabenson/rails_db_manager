@@ -74,6 +74,18 @@ namespace :db do
 
   end
 
+  task :reset_schema, [:admin, :app, :env] do |t, args|
+    Rails.logger = Logger.new(STDOUT)
+    Rails.logger.info("DB:: reset_schema: admin: #{args.admin}, app: #{args.app}, env: #{args.env}")
+
+    admin = args.admin
+    user = "uss_#{args.app}_#{args.env}"
+    Rails.logger.info("DB:: reset_schema: user: #{user}")
+    database = "uss_#{args.app}_#{args.env}"
+    backup_file = "~/tmp/#{database}_backup.db"
+
+    reset_schema(admin, user, database, backup_file)
+  end
 
   task :sync_prod_to_local, [:admin, :app, :env] do |t, args|
     Rails.logger = Logger.new(STDOUT)
@@ -95,17 +107,22 @@ namespace :db do
   end
 
 
-  task :reset_schema, [:admin, :app, :env] do |t, args|
+  task :sync_prod_to_test, [:app, :env] do |t, args|
     Rails.logger = Logger.new(STDOUT)
-    Rails.logger.info("DB:: reset_schema: admin: #{args.admin}, app: #{args.app}, env: #{args.env}")
+    Rails.logger.info("DB:: sync_db_local")
 
-    admin = args.admin
-    user = "uss_#{args.app}_#{args.env}"
-    Rails.logger.info("DB:: reset_schema: user: #{user}")
+    app = args.app
     database = "uss_#{args.app}_#{args.env}"
-    backup_file = "~/tmp/#{database}_backup.db"
+    user = "uss_#{args.app}_#{args.env}"
+    backup_file = "~/tmp/#{database}_test_backup.db"
 
-    reset_schema(admin, user, database, backup_file)
+    # Get production data locally
+    Rails.logger.debug("Backup Production Database")
+
+    `pg_dump --no-owner --no-acl -Z0 --schema=uss -haurora-postgres-moderate-cluster-1.cluster-ccklrxkcenui.us-west-2.rds.amazonaws.com -Uuss_#{app}_prod uss_#{app}_prod > #{backup_file}`
+
+    # Clear out local postgres database
+    reset_test(user, database, backup_file)
   end
   #
   # task :sync_db_test, [:app,:env] do |t, args|
@@ -364,28 +381,35 @@ namespace :db do
     `psql -h localhost -U #{user} #{database} < #{backup_file}`
 
   end
-  #
-  # def reset_test(user, database, backup_file)
-  #   Rails.logger = Logger.new(STDOUT)
-  #   Rails.logger.info("DB:: reset_test")
-  #
-  #   host = "aurora-postgres-moderate-cluster-1.cluster-ccklrxkcenui.us-west-2.rds.amazonaws.com"
-  #
-  #   Rails.logger.info("DB:: Drop Schema")
-  #   `psql -h #{host} -U#{user} -d #{database} -c 'DROP SCHEMA IF EXISTS uss CASCADE'`
-  #   Rails.logger.info("DB:: Create Schema")
-  #   `psql -h #{host} -U#{user} -d #{database} -c 'CREATE SCHEMA uss'`
-  #   Rails.logger.info("DB:: Add Grants")
-  #   `psql -h #{host} -U#{user} -d #{database} -c 'GRANT ALL PRIVILEGES ON SCHEMA uss TO #{user}'`
-  #   `psql -h #{host} -U#{user} -d #{database} -c 'ALTER DEFAULT PRIVILEGES IN SCHEMA uss GRANT SELECT,INSERT,UPDATE,DELETE ON TABLES TO #{user}'`
-  #   `psql -h #{host} -U#{user} -d #{database} -c 'GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA uss TO #{user}'`
-  #   `psql -h #{host} -U#{user} -d #{database} -c 'GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA uss TO #{user}'`
-  #   Rails.logger.info("DB:: Set search path")
-  #   #`psql -h #{host} -U #{admin} -d postgres -c 'ALTER DATABASE #{database} SET SEARCH_PATH TO uss, public'`
-  #
-  #   Rails.logger.info("DB:: Import: #{backup_file}")
-  #   `psql -h #{host} -U #{user} #{database} < #{backup_file}`
-  #
-  # end
+
+  def reset_test(user, database, backup_file)
+    Rails.logger = Logger.new(STDOUT)
+    Rails.logger.info("DB:: reset_test")
+
+    host = "aurora-postgres-moderate-cluster-1.cluster-ccklrxkcenui.us-west-2.rds.amazonaws.com"
+
+    Rails.logger.info("DB:: Drop Schema")
+    `psql -h #{host} -U#{user} -d #{database} -c 'DROP SCHEMA IF EXISTS uss CASCADE'`
+    Rails.logger.info("DB:: Create Schema")
+    `psql -h #{host} -U#{user} -d #{database} -c 'CREATE SCHEMA uss'`
+    Rails.logger.info("DB:: Add Grants")
+    `psql -h #{host} -U#{user} -d #{database} -c 'GRANT ALL PRIVILEGES ON SCHEMA uss TO #{user}'`
+    `psql -h #{host} -U#{user} -d #{database} -c 'ALTER DEFAULT PRIVILEGES IN SCHEMA uss GRANT SELECT,INSERT,UPDATE,DELETE ON TABLES TO #{user}'`
+    `psql -h #{host} -U#{user} -d #{database} -c 'GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA uss TO #{user}'`
+    `psql -h #{host} -U#{user} -d #{database} -c 'GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA uss TO #{user}'`
+
+    `psql -h #{host} -U#{user} -d #{database} -c 'GRANT USAGE ON SCHEMA uss to #{user}_reader'`
+    `psql -h #{host} -U#{user} -d #{database} -c 'GRANT SELECT ON ALL TABLES IN SCHEMA uss TO #{user}_reader'`
+    `psql -h #{host} -U#{user} -d #{database} -c 'GRANT SELECT ON ALL SEQUENCES IN SCHEMA uss TO #{user}_reader'`
+    `psql -h #{host} -U#{user} -d #{database} -c 'ALTER DEFAULT PRIVILEGES IN SCHEMA uss GRANT SELECT ON TABLES TO #{user}_reader'`
+    `psql -h #{host} -U#{user} -d #{database} -c 'ALTER DEFAULT PRIVILEGES IN SCHEMA uss GRANT SELECT ON SEQUENCES TO #{user}_reader'`
+
+    Rails.logger.info("DB:: Set search path")
+    #`psql -h #{host} -U #{admin} -d postgres -c 'ALTER DATABASE #{database} SET SEARCH_PATH TO uss, public'`
+
+    Rails.logger.info("DB:: Import: #{backup_file}")
+    `psql -h #{host} -U #{user} #{database} < #{backup_file}`
+
+  end
 
 end

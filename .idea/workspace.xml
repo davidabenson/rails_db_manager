@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="079e0830-b3ab-4548-b4fe-b45fe3b1e85b" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.rakeTasks" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.rakeTasks" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/db_manager.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/db_manager.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/tasks/db_manager_tasks.rake" beforeDir="false" afterPath="$PROJECT_DIR$/lib/tasks/db_manager_tasks.rake" afterDir="false" />
     </list>
@@ -18,8 +16,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/tasks/db_manager_tasks.rake">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="720">
-              <caret line="79" column="46" selection-start-line="79" selection-start-column="46" selection-end-line="79" selection-end-column="46" />
+            <state relative-caret-position="368">
+              <caret line="109" column="25" lean-forward="true" selection-start-line="109" selection-start-column="7" selection-end-line="109" selection-end-column="25" />
             </state>
           </provider>
         </entry>
@@ -97,7 +95,7 @@
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="y" value="23" />
     <option name="width" value="2560" />
-    <option name="height" value="1576" />
+    <option name="height" value="1573" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -179,18 +177,19 @@
       <workItem from="1554480950605" duration="227000" />
       <workItem from="1554481359220" duration="1542000" />
       <workItem from="1555517164786" duration="2918000" />
-      <workItem from="1559681649325" duration="1128000" />
+      <workItem from="1559681649325" duration="2037000" />
+      <workItem from="1559755721013" duration="861000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="84316000" />
+    <option name="totallyTimeSpent" value="86086000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="2560" height="1576" extended-state="6" />
+    <frame x="0" y="23" width="2560" height="1573" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.11993646" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.120730735" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -203,9 +202,9 @@
       <window_info anchor="bottom" id="Docker" order="7" />
       <window_info anchor="bottom" id="Database Changes" order="8" />
       <window_info anchor="bottom" id="Version Control" order="9" />
-      <window_info anchor="bottom" id="Terminal" order="10" weight="0.3798024" />
+      <window_info anchor="bottom" id="Terminal" order="10" weight="0.37860084" />
       <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
-      <window_info active="true" anchor="bottom" id="Messages" order="12" visible="true" weight="0.33039647" />
+      <window_info active="true" anchor="bottom" id="Messages" order="12" visible="true" weight="0.329904" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -221,8 +220,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/tasks/db_manager_tasks.rake">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="720">
-          <caret line="79" column="46" selection-start-line="79" selection-start-column="46" selection-end-line="79" selection-end-column="46" />
+        <state relative-caret-position="368">
+          <caret line="109" column="25" lean-forward="true" selection-start-line="109" selection-start-column="7" selection-end-line="109" selection-end-column="25" />
         </state>
       </provider>
     </entry>
