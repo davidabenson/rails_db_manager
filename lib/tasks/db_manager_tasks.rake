@@ -107,7 +107,25 @@ namespace :db do
   end
 
 
-  task :sync_prod_to_test, [:app, :env] do |t, args|
+  task :sync_moderate_prod_to_environment, [:app, :env] do |t, args|
+    Rails.logger = Logger.new(STDOUT)
+    Rails.logger.info("DB:: sync_db_local")
+
+    app = args.app
+    database = "uss_#{args.app}_#{args.env}"
+    user = "uss_#{args.app}_#{args.env}"
+    backup_file = "~/tmp/#{database}_test_backup.db"
+
+    # Get production data locally
+    Rails.logger.debug("Backup Production Database")
+
+    `pg_dump --no-owner --no-acl -Z0 --schema=uss -haurora-postgres-moderate-cluster-1.cluster-ccklrxkcenui.us-west-2.rds.amazonaws.com -Uuss_#{app}_prod uss_#{app}_prod > #{backup_file}`
+
+    # Clear out local postgres database
+    reset_moderate_database(user, database, backup_file)
+  end
+
+  task :sync_prod_to_stage, [:app, :env] do |t, args|
     Rails.logger = Logger.new(STDOUT)
     Rails.logger.info("DB:: sync_db_local")
 
@@ -124,6 +142,7 @@ namespace :db do
     # Clear out local postgres database
     reset_test(user, database, backup_file)
   end
+
   #
   # task :sync_db_test, [:app,:env] do |t, args|
   #   Rails.logger = Logger.new(STDOUT)
@@ -382,9 +401,9 @@ namespace :db do
 
   end
 
-  def reset_test(user, database, backup_file)
+  def reset_moderate_database(user, database, backup_file)
     Rails.logger = Logger.new(STDOUT)
-    Rails.logger.info("DB:: reset_test")
+    Rails.logger.info("DB:: reset_moderate_database")
 
     host = "aurora-postgres-moderate-cluster-1.cluster-ccklrxkcenui.us-west-2.rds.amazonaws.com"
 
