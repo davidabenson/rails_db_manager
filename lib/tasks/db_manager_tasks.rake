@@ -106,24 +106,74 @@ namespace :db do
     reset_schema(admin, user, database, backup_file)
   end
 
-
   task :sync_moderate_prod_to_environment, [:app, :env] do |t, args|
     Rails.logger = Logger.new(STDOUT)
     Rails.logger.info("DB:: sync_db_local")
 
     app = args.app
-    database = "uss_#{args.app}_#{args.env}"
-    user = "uss_#{args.app}_#{args.env}"
-    backup_file = "~/tmp/#{database}_test_backup.db"
+    env = args.env
+    database = "uss_#{app}_#{env}"
+    user = "uss_#{app}_#{env}"
+    backup_file = "~/tmp/#{database}_backup.db"
+    aws_host = "aurora-postgres-moderate-cluster-1.cluster-ccklrxkcenui.us-west-2.rds.amazonaws.com"
+
+    dest_host = aws_host
+    if env == "dev"
+      dest_host = "localhost"
+    end
 
     # Get production data locally
     Rails.logger.debug("Backup Production Database")
 
-    `pg_dump --no-owner --no-acl -Z0 --schema=uss -haurora-postgres-moderate-cluster-1.cluster-ccklrxkcenui.us-west-2.rds.amazonaws.com -Uuss_#{app}_prod uss_#{app}_prod > #{backup_file}`
+    `pg_dump --no-owner --no-acl -Z0 --schema=uss -h#{aws_host} -Uuss_#{app}_prod uss_#{app}_prod > #{backup_file}`
 
     # Clear out local postgres database
-    reset_moderate_database(user, database, backup_file)
+    reset_moderate_database(user, database, dest_host, backup_file)
   end
+
+  task :sync_low_prod_to_environment, [:app, :env] do |t, args|
+    Rails.logger = Logger.new(STDOUT)
+    Rails.logger.info("DB:: sync_db_local")
+
+    app = args.app
+    env = args.env
+    database = "uss_#{app}_#{env}"
+    user = "uss_#{app}_#{env}"
+    backup_file = "~/tmp/#{database}_backup.db"
+    aws_host = "aurora-postgres-1.ccklrxkcenui.us-west-2.rds.amazonaws.com"
+
+    dest_host = aws_host
+    if env == "dev"
+      dest_host = "localhost"
+    end
+
+    # Get production data locally
+    Rails.logger.debug("Backup Production Database")
+
+    `pg_dump --no-owner --no-acl -Z0 --schema=uss -h#{aws_host} -Uuss_#{app}_prod uss_#{app}_prod > #{backup_file}`
+
+    # Clear out local postgres database
+    reset_moderate_database(user, database, dest_host, backup_file)
+  end
+
+
+  # task :sync_moderate_prod_to_environment, [:app, :env] do |t, args|
+  #   Rails.logger = Logger.new(STDOUT)
+  #   Rails.logger.info("DB:: sync_db_local")
+  #
+  #   app = args.app
+  #   database = "uss_#{args.app}_#{args.env}"
+  #   user = "uss_#{args.app}_#{args.env}"
+  #   backup_file = "~/tmp/#{database}_test_backup.db"
+  #
+  #   # Get production data locally
+  #   Rails.logger.debug("Backup Production Database")
+  #
+  #   `pg_dump --no-owner --no-acl -Z0 --schema=uss -haurora-postgres-moderate-cluster-1.cluster-ccklrxkcenui.us-west-2.rds.amazonaws.com -Uuss_#{app}_prod uss_#{app}_prod > #{backup_file}`
+  #
+  #   # Clear out local postgres database
+  #   reset_moderate_database(user, database, backup_file)
+  # end
 
   task :sync_prod_to_stage, [:app, :env] do |t, args|
     Rails.logger = Logger.new(STDOUT)
@@ -202,10 +252,11 @@ namespace :db do
     Rails.logger.info("db:create_environments")
 
     dev = OpenStruct.new ({shell_name: "Novel", database: "", user: "", pwd: "", })
+    unit = OpenStruct.new ({shell_name: "Novel", database: "", user: "", pwd: "", })
     test = OpenStruct.new ({shell_name: "Grass", database: "", user: "", pwd: "", })
     stage = OpenStruct.new ({shell_name: "Ocean", database: "", user: "", pwd: "", })
     prod = OpenStruct.new ({shell_name: "Red Sands", database: "", user: "", pwd: "", })
-    environments = {dev: dev, test: test, stage: stage, prod: prod}
+    environments = {dev: dev, unit: unit, test: test, stage: stage, prod: prod}
 
     # setup envionment conventions
     environments.each do |key, e|
@@ -401,11 +452,9 @@ namespace :db do
 
   end
 
-  def reset_moderate_database(user, database, backup_file)
+  def reset_moderate_database(user, database, host, backup_file)
     Rails.logger = Logger.new(STDOUT)
     Rails.logger.info("DB:: reset_moderate_database")
-
-    host = "aurora-postgres-moderate-cluster-1.cluster-ccklrxkcenui.us-west-2.rds.amazonaws.com"
 
     Rails.logger.info("DB:: Drop Schema")
     `psql -h #{host} -U#{user} -d #{database} -c 'DROP SCHEMA IF EXISTS uss CASCADE'`
