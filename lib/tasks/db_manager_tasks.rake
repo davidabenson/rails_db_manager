@@ -118,7 +118,7 @@ namespace :db do
     aws_host = "aurora-postgres-moderate-cluster-1.cluster-ccklrxkcenui.us-west-2.rds.amazonaws.com"
 
     dest_host = aws_host
-    if env == "dev"
+    if env == "dev" || "prod"
       dest_host = "localhost"
     end
 
@@ -126,6 +126,37 @@ namespace :db do
     Rails.logger.debug("Backup Production Database")
 
     `pg_dump --no-owner --no-acl -Z0 --schema=uss -h#{aws_host} -Uuss_#{app}_prod uss_#{app}_prod > #{backup_file}`
+
+    # Clear out local postgres database
+    Rails.logger.info("DB:: sync_db_local: user: #{user}")
+    Rails.logger.info("DB:: sync_db_local: database: #{database}")
+    Rails.logger.info("DB:: sync_db_local: dest_host: #{dest_host}")
+    Rails.logger.info("DB:: sync_db_local: backup_file: #{backup_file}")
+
+    reset_moderate_database(user, database, dest_host, backup_file)
+  end
+
+  task :sync_moderate_env_to_env, [:app, :from_env, :to_env] do |t, args|
+    Rails.logger = Logger.new(STDOUT)
+    Rails.logger.info("DB:: sync_db_local")
+
+    app = args.app
+    to_env = args.to_env
+    from_env = args.from_env
+    database = "uss_#{app}_#{to_env}"
+    user = "uss_#{app}_#{to_env}"
+    backup_file = "~/tmp/#{database}_backup.db"
+    aws_host = "aurora-postgres-moderate-cluster-1.cluster-ccklrxkcenui.us-west-2.rds.amazonaws.com"
+
+    dest_host = aws_host
+    if to_env == "dev" || "prod"
+      dest_host = "localhost"
+    end
+
+    # Get production data locally
+    Rails.logger.debug("Backup #{from_env} Database")
+
+    `pg_dump --no-owner --no-acl -Z0 --schema=uss -h#{aws_host} -Uuss_#{app}_#{from_env} uss_#{app}_#{from_env} > #{backup_file}`
 
     # Clear out local postgres database
     reset_moderate_database(user, database, dest_host, backup_file)
@@ -466,11 +497,11 @@ namespace :db do
     `psql -h #{host} -U#{user} -d #{database} -c 'GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA uss TO #{user}'`
     `psql -h #{host} -U#{user} -d #{database} -c 'GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA uss TO #{user}'`
 
-    `psql -h #{host} -U#{user} -d #{database} -c 'GRANT USAGE ON SCHEMA uss to #{user}_reader'`
-    `psql -h #{host} -U#{user} -d #{database} -c 'GRANT SELECT ON ALL TABLES IN SCHEMA uss TO #{user}_reader'`
-    `psql -h #{host} -U#{user} -d #{database} -c 'GRANT SELECT ON ALL SEQUENCES IN SCHEMA uss TO #{user}_reader'`
-    `psql -h #{host} -U#{user} -d #{database} -c 'ALTER DEFAULT PRIVILEGES IN SCHEMA uss GRANT SELECT ON TABLES TO #{user}_reader'`
-    `psql -h #{host} -U#{user} -d #{database} -c 'ALTER DEFAULT PRIVILEGES IN SCHEMA uss GRANT SELECT ON SEQUENCES TO #{user}_reader'`
+    #`psql -h #{host} -U#{user} -d #{database} -c 'GRANT USAGE ON SCHEMA uss to #{user}_reader'`
+    #`psql -h #{host} -U#{user} -d #{database} -c 'GRANT SELECT ON ALL TABLES IN SCHEMA uss TO #{user}_reader'`
+    #`psql -h #{host} -U#{user} -d #{database} -c 'GRANT SELECT ON ALL SEQUENCES IN SCHEMA uss TO #{user}_reader'`
+    #`psql -h #{host} -U#{user} -d #{database} -c 'ALTER DEFAULT PRIVILEGES IN SCHEMA uss GRANT SELECT ON TABLES TO #{user}_reader'`
+    #`psql -h #{host} -U#{user} -d #{database} -c 'ALTER DEFAULT PRIVILEGES IN SCHEMA uss GRANT SELECT ON SEQUENCES TO #{user}_reader'`
 
     Rails.logger.info("DB:: Set search path")
     #`psql -h #{host} -U #{admin} -d postgres -c 'ALTER DATABASE #{database} SET SEARCH_PATH TO uss, public'`
