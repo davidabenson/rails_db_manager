@@ -118,7 +118,7 @@ namespace :db do
     aws_host = "aurora-postgres-moderate-cluster-1.cluster-ccklrxkcenui.us-west-2.rds.amazonaws.com"
 
     dest_host = aws_host
-    if env == "dev" || "prod"
+    if env == "dev" || env == "prod"
       dest_host = "localhost"
     end
 
@@ -149,7 +149,7 @@ namespace :db do
     aws_host = "aurora-postgres-moderate-cluster-1.cluster-ccklrxkcenui.us-west-2.rds.amazonaws.com"
 
     dest_host = aws_host
-    if to_env == "dev" || "prod"
+    if to_env == "dev" || to_env == "prod"
       dest_host = "localhost"
     end
 
@@ -381,7 +381,7 @@ namespace :db do
       host = "aurora-postgres-moderate-cluster-1.cluster-ccklrxkcenui.us-west-2.rds.amazonaws.com"
       environments.each do |key, e|
         if key != "dev"
-          alias_section << "alias #{app}.db.#{key}=\\\"term.sh \\'psql -h #{host} -U #{e.user} #{e.database}\\' \\'#{e.shell_name}\\'\\\""
+          alias_section << "alias #{app}.db.#{key}=\\\"term.sh \'psql -h #{host} -U #{e.user} #{e.database}\' \'#{e.shell_name}\'\\\""
         end
       end
 
@@ -427,6 +427,10 @@ namespace :db do
   end
 
   def create_schema(admin, user, database)
+
+    Rails.logger.info("DB:: Drop Schema")
+    `psql -h localhost -U#{user} -d #{database} -c 'DROP SCHEMA IF EXISTS uss CASCADE'`
+
     Rails.logger.info("DB:: Create Schema")
     `psql -h localhost -U#{user} -d #{database} -c 'CREATE SCHEMA uss'`
     Rails.logger.info("DB:: Add Grants")
@@ -473,12 +477,9 @@ namespace :db do
     Rails.logger = Logger.new(STDOUT)
     Rails.logger.info("DB:: reset_schema: admin: #{admin}, user: #{user}, database: #{database}")
 
-    Rails.logger.info("DB:: Drop Schema")
-    `psql -h localhost -U#{user} -d #{database} -c 'DROP SCHEMA IF EXISTS uss CASCADE'`
-
     create_schema(admin, user, database)
 
-    Rails.logger.info("DB:: Import: #{backup_file}")
+    Rails.logger.info("DB:: Import: #{backup_file} , Ignore any 'Already exists messages'")
     `psql -h localhost -U #{user} #{database} < #{backup_file}`
 
   end
