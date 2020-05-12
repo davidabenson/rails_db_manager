@@ -481,7 +481,7 @@ namespace :db do
 
     Rails.logger.info("DB:: Import: #{backup_file} , Ignore any 'Already exists messages'")
     `psql -h localhost -U #{user} #{database} < #{backup_file}`
-    `vacuumdb -a -z -h #{host} -U #{user} #{database}`
+    `vacuumdb -q -z -h #{host} -U #{user} #{database}`
 
   end
 
@@ -510,7 +510,7 @@ namespace :db do
 
     Rails.logger.info("DB:: Import: #{backup_file}")
     `psql -h #{host} -U #{user} #{database} < #{backup_file}`
-    `vacuumdb -a -z -h #{host} -U #{user} #{database}`
+    `vacuumdb -q -z -h #{host} -U #{user} #{database}`
 
   end
 
