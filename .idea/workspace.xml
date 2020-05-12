@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="079e0830-b3ab-4548-b4fe-b45fe3b1e85b" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/tasks/db_manager_tasks.rake" beforeDir="false" afterPath="$PROJECT_DIR$/lib/tasks/db_manager_tasks.rake" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -105,7 +104,8 @@
       <workItem from="1584470460792" duration="1363000" />
       <workItem from="1584550353211" duration="7510000" />
       <workItem from="1585592448656" duration="3440000" />
-      <workItem from="1588265066005" duration="2096000" />
+      <workItem from="1588265066005" duration="4827000" />
+      <workItem from="1588887153912" duration="171000" />
     </task>
     <servers />
   </component>
