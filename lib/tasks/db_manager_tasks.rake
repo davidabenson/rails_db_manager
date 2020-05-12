@@ -108,7 +108,7 @@ namespace :db do
 
   task :sync_moderate_prod_to_environment, [:app, :env] do |t, args|
     Rails.logger = Logger.new(STDOUT)
-    Rails.logger.info("DB:: sync_db_local")
+    Rails.logger.info("DB:: sync_moderate_prod_to_environment")
 
     app = args.app
     env = args.env
@@ -138,7 +138,7 @@ namespace :db do
 
   task :sync_moderate_env_to_env, [:app, :from_env, :to_env] do |t, args|
     Rails.logger = Logger.new(STDOUT)
-    Rails.logger.info("DB:: sync_db_local")
+    Rails.logger.info("DB:: sync_moderate_env_to_env")
 
     app = args.app
     to_env = args.to_env
@@ -164,7 +164,7 @@ namespace :db do
 
   task :sync_low_prod_to_environment, [:app, :env] do |t, args|
     Rails.logger = Logger.new(STDOUT)
-    Rails.logger.info("DB:: sync_db_local")
+    Rails.logger.info("DB:: sync_low_prod_to_environment")
 
     app = args.app
     env = args.env
@@ -208,7 +208,7 @@ namespace :db do
 
   task :sync_prod_to_stage, [:app, :env] do |t, args|
     Rails.logger = Logger.new(STDOUT)
-    Rails.logger.info("DB:: sync_db_local")
+    Rails.logger.info("DB:: sync_prod_to_stage")
 
     app = args.app
     database = "uss_#{args.app}_#{args.env}"
@@ -481,7 +481,7 @@ namespace :db do
 
     Rails.logger.info("DB:: Import: #{backup_file} , Ignore any 'Already exists messages'")
     `psql -h localhost -U #{user} #{database} < #{backup_file}`
-    `vacuumdb -a -z`
+    `vacuumdb -a -z -h #{host} -U #{user} #{database}`
 
   end
 
@@ -510,7 +510,7 @@ namespace :db do
 
     Rails.logger.info("DB:: Import: #{backup_file}")
     `psql -h #{host} -U #{user} #{database} < #{backup_file}`
-    `vacuumdb -a -z`
+    `vacuumdb -a -z -h #{host} -U #{user} #{database}`
 
   end
 
