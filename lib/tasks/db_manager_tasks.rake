@@ -100,7 +100,7 @@ namespace :db do
     # Get production data locally
     Rails.logger.debug("Backup Production Database")
 
-    `pg_dump --no-owner --no-acl -Z7 --schema=uss -haurora-postgres-moderate-cluster-1.cluster-ccklrxkcenui.us-west-2.rds.amazonaws.com -Uuss_#{app}_prod uss_#{app}_prod > #{backup_file}`
+    `pg_dump --no-owner --no-acl -Z7 -Fc --schema=uss -haurora-postgres-moderate-cluster-1.cluster-ccklrxkcenui.us-west-2.rds.amazonaws.com -Uuss_#{app}_prod uss_#{app}_prod > #{backup_file}`
 
     # Clear out local postgres database
     reset_schema(admin, user, database, backup_file)
@@ -125,7 +125,7 @@ namespace :db do
     # Get production data locally
     Rails.logger.debug("Backup Production Database")
 
-    `pg_dump --no-owner --no-acl -Z7 --schema=uss -h#{aws_host} -Uuss_#{app}_prod uss_#{app}_prod > #{backup_file}`
+    `pg_dump --no-owner --no-acl -Z7 -Fc --schema=uss -h#{aws_host} -Uuss_#{app}_prod uss_#{app}_prod > #{backup_file}`
 
     # Clear out local postgres database
     Rails.logger.info("DB:: sync_db_local: user: #{user}")
@@ -156,7 +156,7 @@ namespace :db do
     # Get production data locally
     Rails.logger.debug("Backup #{from_env} Database")
 
-    `pg_dump --no-owner --no-acl -Z7 --schema=uss -h#{aws_host} -Uuss_#{app}_#{from_env} uss_#{app}_#{from_env} > #{backup_file}`
+    `pg_dump --no-owner --no-acl -Z7 -Fc --schema=uss -h#{aws_host} -Uuss_#{app}_#{from_env} uss_#{app}_#{from_env} > #{backup_file}`
 
     # Clear out local postgres database
     reset_moderate_database(user, database, dest_host, backup_file)
@@ -181,7 +181,7 @@ namespace :db do
     # Get production data locally
     Rails.logger.debug("Backup Production Database")
 
-    `pg_dump --no-owner --no-acl -Z7 --schema=uss -h#{aws_host} -Uuss_#{app}_prod uss_#{app}_prod > #{backup_file}`
+    `pg_dump --no-owner --no-acl -Z7 -Fc --schema=uss -h#{aws_host} -Uuss_#{app}_prod uss_#{app}_prod > #{backup_file}`
 
     # Clear out local postgres database
     reset_moderate_database(user, database, dest_host, backup_file)
@@ -218,7 +218,7 @@ namespace :db do
     # Get production data locally
     Rails.logger.debug("Backup Production Database")
 
-    `pg_dump --no-owner --no-acl -Z7 --schema=uss -haurora-postgres-moderate-cluster-1.cluster-ccklrxkcenui.us-west-2.rds.amazonaws.com -Uuss_#{app}_prod uss_#{app}_prod > #{backup_file}`
+    `pg_dump --no-owner --no-acl -Z7 -Fc --schema=uss -haurora-postgres-moderate-cluster-1.cluster-ccklrxkcenui.us-west-2.rds.amazonaws.com -Uuss_#{app}_prod uss_#{app}_prod > #{backup_file}`
 
     # Clear out local postgres database
     reset_test(user, database, backup_file)
@@ -481,6 +481,7 @@ namespace :db do
 
     Rails.logger.info("DB:: Import: #{backup_file} , Ignore any 'Already exists messages'")
     `psql -h localhost -U #{user} #{database} < #{backup_file}`
+    `vacuumdb -a -z`
 
   end
 
@@ -509,6 +510,7 @@ namespace :db do
 
     Rails.logger.info("DB:: Import: #{backup_file}")
     `psql -h #{host} -U #{user} #{database} < #{backup_file}`
+    `vacuumdb -a -z`
 
   end
 
