@@ -16,8 +16,8 @@ namespace :db do
     puts "GRANT ALL PRIVILEGES ON SCHEMA uss TO #{user};"
     puts "ALTER DEFAULT PRIVILEGES IN SCHEMA uss GRANT SELECT,INSERT,UPDATE,DELETE ON TABLES TO #{user};"
     puts "GRANT SELECT,INSERT,UPDATE,DELETE,TRIGGER ON ALL TABLES IN SCHEMA uss TO #{user};"
-    puts "GRANT TRIGGER ON All TABLES INS SCHEMA public to uss_best_prod"
-    puts "GRANT TRIGGER ON All TABLES INS SCHEMA uss to uss_best_prod"
+    puts "GRANT TRIGGER ON All TABLES INS SCHEMA public to #{user}"
+    puts "GRANT TRIGGER ON All TABLES INS SCHEMA uss to #{user}"
 
 
     puts ""
