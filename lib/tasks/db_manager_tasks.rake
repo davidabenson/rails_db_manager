@@ -12,7 +12,7 @@ namespace :db do
     Rails.logger.info("-----------------------")
     puts "GRANT CONNECT ON DATABASE uss_bts_prod TO uss_nwtc_prod_reader;"
 
-    puts "**** Rset after database is created ****"
+    puts "-- **** Rset after database is created ****"
     puts "DROP SCHEMA IF EXISTS uss CASCADE;"
     puts "CREATE SCHEMA uss;"
     puts "GRANT ALL PRIVILEGES ON SCHEMA uss TO #{user};"
@@ -21,7 +21,7 @@ namespace :db do
     puts "GRANT TRIGGER ON All TABLES IN SCHEMA public to #{user};"
     puts "GRANT TRIGGER ON All TABLES IN SCHEMA uss to #{user};"
 
-    puts "// reader account reset"
+    puts "-- reader account reset"
     puts "GRANT USAGE ON SCHEMA uss to #{user}_reader;"
     puts "GRANT SELECT ON ALL TABLES IN SCHEMA uss TO #{user}_reader;"
     puts "GRANT SELECT ON ALL SEQUENCES IN SCHEMA public TO uss_nwtc_prod_reader;"
