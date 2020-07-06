@@ -18,13 +18,13 @@ namespace :db do
     puts "GRANT ALL PRIVILEGES ON SCHEMA uss TO #{user};"
     puts "ALTER DEFAULT PRIVILEGES IN SCHEMA uss GRANT SELECT,INSERT,UPDATE,DELETE ON TABLES TO #{user};"
     puts "GRANT SELECT,INSERT,UPDATE,DELETE,TRIGGER ON ALL TABLES IN SCHEMA uss TO #{user};"
-    puts "GRANT TRIGGER ON All TABLES IN SCHEMA public to #{user}"
-    puts "GRANT TRIGGER ON All TABLES IN SCHEMA uss to #{user}"
+    puts "GRANT TRIGGER ON All TABLES IN SCHEMA public to #{user};"
+    puts "GRANT TRIGGER ON All TABLES IN SCHEMA uss to #{user};"
 
-
+    puts "// reader account reset"
     puts "GRANT USAGE ON SCHEMA uss to #{user}_reader;"
     puts "GRANT SELECT ON ALL TABLES IN SCHEMA uss TO #{user}_reader;"
-    puts "GRANT SELECT ON ALL SEQUENCES IN SCHEMA public TO uss_nwtc_prod_reader"
+    puts "GRANT SELECT ON ALL SEQUENCES IN SCHEMA public TO uss_nwtc_prod_reader;"
     puts "GRANT SELECT ON ALL SEQUENCES IN SCHEMA uss TO #{user}_reader;"
     puts "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO #{user}_reader;"
     puts "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON SEQUENCES TO #{user}_reader;"
