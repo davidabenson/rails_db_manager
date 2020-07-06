@@ -15,7 +15,11 @@ namespace :db do
     puts "CREATE SCHEMA uss;"
     puts "GRANT ALL PRIVILEGES ON SCHEMA uss TO #{user};"
     puts "ALTER DEFAULT PRIVILEGES IN SCHEMA uss GRANT SELECT,INSERT,UPDATE,DELETE ON TABLES TO #{user};"
-    puts "GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA uss TO #{user};"
+    puts "GRANT SELECT,INSERT,UPDATE,DELETE,TRIGGER ON ALL TABLES IN SCHEMA uss TO #{user};"
+    puts "GRANT TRIGGER ON All TABLES INS SCHEMA public to uss_best_prod"
+    puts "GRANT TRIGGER ON All TABLES INS SCHEMA uss to uss_best_prod"
+
+
     puts ""
     puts "GRANT USAGE ON SCHEMA uss to #{user}_reader;"
     puts "GRANT SELECT ON ALL TABLES IN SCHEMA uss TO #{user}_reader;"
@@ -108,39 +112,40 @@ namespace :db do
     reset_schema(admin, user, database, backup_file)
   end
 
-  task :sync_moderate_prod_to_environment, [:app, :env] do |t, args|
-    Rails.logger = Logger.new(STDOUT)
-    Rails.logger.info("DB:: sync_moderate_prod_to_environment")
-
-    app = args.app
-    env = args.env
-    database = "uss_#{app}_#{env}"
-    user = "uss_#{app}_#{env}"
-    backup_file = "~/tmp/#{database}_backup.db"
-    aws_host = "aurora-postgres-moderate-cluster-1.cluster-ccklrxkcenui.us-west-2.rds.amazonaws.com"
-
-    dest_host = aws_host
-    if env == "dev" || env == "prod"
-      dest_host = "localhost"
-    end
-
-    dump_prod(aws_host, "uss_#{app}_prod", "uss_#{app}_prod", backup_file)
-
-    # # Get production data locally
-    # Rails.logger.debug("Backup Production Database")
-    #
-    # `pg_dump --no-owner --no-acl -Z7 -Fc --schema=uss -h#{aws_host} -Uuss_#{app}_prod uss_#{app}_prod > #{backup_file}`
-
-    # Clear out local postgres database
-    Rails.logger.info("DB:: sync_db_local: user: #{user}")
-    Rails.logger.info("DB:: sync_db_local: database: #{database}")
-    Rails.logger.info("DB:: sync_db_local: dest_host: #{dest_host}")
-    Rails.logger.info("DB:: sync_db_local: backup_file: #{backup_file}")
-
-    reset_moderate_database(user, database, dest_host, backup_file)
-  end
+  # task :sync_moderate_prod_to_environment, [:app, :env] do |t, args|
+  #   Rails.logger = Logger.new(STDOUT)
+  #   Rails.logger.info("DB:: sync_moderate_prod_to_environment")
+  #
+  #   app = args.app
+  #   env = args.env
+  #   database = "uss_#{app}_#{env}"
+  #   user = "uss_#{app}_#{env}"
+  #   backup_file = "~/tmp/#{database}_backup.db"
+  #   aws_host = "aurora-postgres-moderate-cluster-1.cluster-ccklrxkcenui.us-west-2.rds.amazonaws.com"
+  #
+  #   dest_host = aws_host
+  #   if env == "dev" || env == "prod"
+  #     dest_host = "localhost"
+  #   end
+  #
+  #   dump_prod(aws_host, "uss_#{app}_prod", "uss_#{app}_prod", backup_file)
+  #
+  #   # # Get production data locally
+  #   # Rails.logger.debug("Backup Production Database")
+  #   #
+  #   # `pg_dump --no-owner --no-acl -Z7 -Fc --schema=uss -h#{aws_host} -Uuss_#{app}_prod uss_#{app}_prod > #{backup_file}`
+  #
+  #   # Clear out local postgres database
+  #   Rails.logger.info("DB:: sync_db_local: user: #{user}")
+  #   Rails.logger.info("DB:: sync_db_local: database: #{database}")
+  #   Rails.logger.info("DB:: sync_db_local: dest_host: #{dest_host}")
+  #   Rails.logger.info("DB:: sync_db_local: backup_file: #{backup_file}")
+  #
+  #   reset_moderate_database(user, database, dest_host, backup_file)
+  # end
 
   task :sync_moderate_env_to_env, [:app, :from_env, :to_env] do |t, args|
+    desc "Copy database from moderate environment to new environment, E.G.  rake db:sync_moderate_env_to_env[{ehs,esif..},{prod,stage,test],{dev,stage,test}]"
     Rails.logger = Logger.new(STDOUT)
     Rails.logger.info("DB:: sync_moderate_env_to_env")
 
@@ -533,8 +538,8 @@ namespace :db do
 
     `pg_restore -Fc --no-owner --no-privileges -h #{host} -U  #{user} -d #{database} #{backup_file}`
 
-      #Rails.logger.info("DB:: Vacuum: #{backup_file} , Ignore any 'Vacuum permission errors'")
-      #`vacuumdb -q -z -h #{host} -U #{user} #{database}`
+    #Rails.logger.info("DB:: Vacuum: #{backup_file} , Ignore any 'Vacuum permission errors'")
+    #`vacuumdb -q -z -h #{host} -U #{user} #{database}`
   end
 
 end
