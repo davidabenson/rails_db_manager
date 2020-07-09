@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="079e0830-b3ab-4548-b4fe-b45fe3b1e85b" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/db_manager.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/db_manager.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.ruby-version" beforeDir="false" afterPath="$PROJECT_DIR$/.ruby-version" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db_manager.gemspec" beforeDir="false" afterPath="$PROJECT_DIR$/db_manager.gemspec" afterDir="false" />
-    </list>
+    <list default="true" id="079e0830-b3ab-4548-b4fe-b45fe3b1e85b" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -113,7 +107,7 @@
       <workItem from="1593020689430" duration="10743000" />
       <workItem from="1594332110597" duration="1373000" />
       <workItem from="1594333729359" duration="113000" />
-      <workItem from="1594334220239" duration="485000" />
+      <workItem from="1594334220239" duration="818000" />
     </task>
     <servers />
   </component>
