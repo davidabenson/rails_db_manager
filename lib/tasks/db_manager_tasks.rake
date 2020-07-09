@@ -332,7 +332,7 @@ namespace :db do
         `grep -q  "#{host}:5432:#{e.user}:#{e.database}:" ~/.pgpass`; result = $?.success?
         if !result
 
-          `echo "#{host}:5432:#{e.user}:#{e.database}}:#{e.pwd}" >> ~/.pgpass`
+          `echo "#{host}:5432:#{e.user}:#{e.database}:#{e.pwd}" >> ~/.pgpass`
 
           # if environment == "dev"
           #   `sed -E "s/localhost:5432:#{user}:#{database}:.*/localhost:5432:#{user}:#{database}:#{pwd}/" ~/.pgpass > ~/.pgpass.new`
