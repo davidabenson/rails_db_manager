@@ -34,7 +34,7 @@ namespace :db do
   end
 
 
-  task :create_environments, [:admin, :app] => [:environment, :dotenv] do |t, args|
+  task :create_environments, [:admin, :app] => [:dotenv] do |t, args|
     Rails.logger = Logger.new(STDOUT)
     Rails.logger.info("db:create_environments")
 
@@ -44,7 +44,7 @@ namespace :db do
     create_environments(admin, app)
   end
 
-  task :destroy_environments, [:admin, :app] => [:environment, :dotenv] do |t, args|
+  task :destroy_environments, [:admin, :app] => [:dotenv] do |t, args|
     Rails.logger = Logger.new(STDOUT)
     Rails.logger.info("db:destroy_environments")
 
@@ -55,7 +55,7 @@ namespace :db do
   end
 
 
-  task :create_database, [:admin, :app, :env] => [:environment, :dotenv] do |t, args|
+  task :create_database, [:admin, :app, :env] => [:dotenv] do |t, args|
     Rails.logger = Logger.new(STDOUT)
     Rails.logger.info("db:create_database start task")
 
@@ -66,7 +66,7 @@ namespace :db do
     create_database(admin, user, database)
   end
 
-  task :create_schema, [:admin, :app, :env] => [:environment, :dotenv] do |t, args|
+  task :create_schema, [:admin, :app, :env] => [:dotenv] do |t, args|
     Rails.logger = Logger.new(STDOUT)
     Rails.logger.info("db:create_schema start task")
 
@@ -433,9 +433,7 @@ namespace :db do
   end
 
 
-  def update_pgpass(admin, user, app, env)
-
-  end
+  def update_pgpass(admin, user, app, env) end
 
   def create_database(admin, user, database)
     Rails.logger.info("DB:: Create Database")
