@@ -10,7 +10,7 @@ namespace :db do
     user = "uss_#{args.app}_#{args.env}"
 
     Rails.logger.info("-----------------------")
-    puts "GRANT CONNECT ON DATABASE uss_bts_prod TO uss_nwtc_prod_reader;"
+    puts "GRANT CONNECT ON DATABASE #{user} TO #{user}_reader;"
 
     puts "-- **** Rset after database is created ****"
     puts "DROP SCHEMA IF EXISTS uss CASCADE;"
@@ -29,10 +29,14 @@ namespace :db do
     puts "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO #{user}_reader;"
     puts "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON SEQUENCES TO #{user}_reader;"
 
+    puts "-- New reader account --"
+    puts "CREATE SCHEMA bi;"
+    puts "GRANT USAGE ON SCHEMA bi TO #{user}_reader;"
+    puts "GRANT SELECT ON ALL TABLES IN SCHEMA bi TO #{user}_reader;"
+    puts "ALTER DEFAULT PRIVILEGES IN SCHEMA bi GRANT SELECT ON TABLES TO #{user}_reader;"
 
     Rails.logger.info("-----------------------")
   end
-
 
   task :create_environments, [:admin, :app] => [:dotenv] do |t, args|
     Rails.logger = Logger.new(STDOUT)
@@ -53,7 +57,6 @@ namespace :db do
 
     destroy_environments(admin, app)
   end
-
 
   task :create_database, [:admin, :app, :env] => [:dotenv] do |t, args|
     Rails.logger = Logger.new(STDOUT)
@@ -103,7 +106,6 @@ namespace :db do
     user = "uss_#{args.app}_#{args.env}"
     admin = args.admin
     backup_file = "~/tmp/#{database}_backup.db"
-
 
     dump_prod('aurora-postgres-moderate-cluster-1.cluster-ccklrxkcenui.us-west-2.rds.amazonaws.com', "uss_#{app}_prod", "uss_#{app}_prod", backup_file)
     # # Get production data locally
@@ -202,7 +204,6 @@ namespace :db do
     reset_moderate_database(user, database, dest_host, backup_file)
   end
 
-
   # task :sync_moderate_prod_to_environment, [:app, :env] do |t, args|
   #   Rails.logger = Logger.new(STDOUT)
   #   Rails.logger.info("DB:: sync_db_local")
@@ -231,7 +232,6 @@ namespace :db do
     backup_file = "~/tmp/#{database}_test_backup.db"
 
     dump_prod(aws_host, "uss_#{app}_prod", "uss_#{app}_prod", backup_file)
-
 
     # # Get production data locally
     # Rails.logger.debug("Backup Production Database")
@@ -300,12 +300,12 @@ namespace :db do
   def create_environments(admin, app)
     Rails.logger.info("db:create_environments")
 
-    dev = OpenStruct.new ({shell_name: "Novel", database: "", user: "", pwd: "", })
-    unit = OpenStruct.new ({shell_name: "Novel", database: "", user: "", pwd: "", })
-    test = OpenStruct.new ({shell_name: "Grass", database: "", user: "", pwd: "", })
-    stage = OpenStruct.new ({shell_name: "Ocean", database: "", user: "", pwd: "", })
-    prod = OpenStruct.new ({shell_name: "Red Sands", database: "", user: "", pwd: "", })
-    environments = {dev: dev, unit: unit, test: test, stage: stage, prod: prod}
+    dev = OpenStruct.new ({ shell_name: "Novel", database: "", user: "", pwd: "", })
+    unit = OpenStruct.new ({ shell_name: "Novel", database: "", user: "", pwd: "", })
+    test = OpenStruct.new ({ shell_name: "Grass", database: "", user: "", pwd: "", })
+    stage = OpenStruct.new ({ shell_name: "Ocean", database: "", user: "", pwd: "", })
+    prod = OpenStruct.new ({ shell_name: "Red Sands", database: "", user: "", pwd: "", })
+    environments = { dev: dev, unit: unit, test: test, stage: stage, prod: prod }
 
     # setup envionment conventions
     environments.each do |key, e|
@@ -319,8 +319,7 @@ namespace :db do
       `psql -U #{admin}  -d postgres -tc "SELECT 1 FROM pg_user WHERE usename = '#{e.user}'" | grep -q 1 || psql -U #{admin}  -d postgres -c "CREATE USER #{e.user} WITH ENCRYPTED PASSWORD '#{e.pwd}'"`
     end
 
-
-    shell_envs = {"dev": "Novel", "test": "Grass", "stage": "Ocean", "prod": "Red Sands"}
+    shell_envs = { "dev": "Novel", "test": "Grass", "stage": "Ocean", "prod": "Red Sands" }
 
     # update .pgpqass with new passwords, if missing
     `grep -q  "##{app}" ~/.pgpass`; result = $?.success?
@@ -375,13 +374,11 @@ namespace :db do
     #
     # `cp ~/.pgpass.new ~/.pgpass`
 
-
     # update database.yml file, set dev password
     # database = YAML.load(ERB.new(IO.read(File.join(Rails.root, "config", "database.yml"))).result)
     # puts "#{database["development"]["password"]}"
     # database["development"]["password"] = pwd
     # File.open(File.join(Rails.root, "config", "../../#{app}/database.yml"), 'w') { |f| YAML.dump(database, f) }
-
 
     # update .database_profile
     #
@@ -432,7 +429,6 @@ namespace :db do
 
   end
 
-
   def update_pgpass(admin, user, app, env) end
 
   def create_database(admin, user, database)
@@ -461,11 +457,11 @@ namespace :db do
   def destroy_environments(admin, app)
 
     Rails.logger.info("db:destroy_environments")
-    dev = OpenStruct.new ({shell_name: "Novel", database: "", user: ""})
-    test = OpenStruct.new ({shell_name: "Grass", database: "", user: ""})
-    stage = OpenStruct.new ({shell_name: "Ocean", database: "", user: ""})
-    prod = OpenStruct.new ({shell_name: "Red Sands", database: "", user: ""})
-    environments = {dev: dev, test: test, stage: stage, prod: prod}
+    dev = OpenStruct.new ({ shell_name: "Novel", database: "", user: "" })
+    test = OpenStruct.new ({ shell_name: "Grass", database: "", user: "" })
+    stage = OpenStruct.new ({ shell_name: "Ocean", database: "", user: "" })
+    prod = OpenStruct.new ({ shell_name: "Red Sands", database: "", user: "" })
+    environments = { dev: dev, test: test, stage: stage, prod: prod }
 
     # setup envionment conventions
     environments.each do |key, e|

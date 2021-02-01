@@ -2,7 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="079e0830-b3ab-4548-b4fe-b45fe3b1e85b" name="Default Changelist" comment="">
+
+      <change beforePath="$PROJECT_DIR$/.idea/db_manager.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/db_manager.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/tasks/db_manager_tasks.rake" beforeDir="false" afterPath="$PROJECT_DIR$/lib/tasks/db_manager_tasks.rake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/tasks/db_manager_tasks_rancher.rake" beforeDir="false" afterPath="$PROJECT_DIR$/lib/tasks/db_manager_tasks_rancher.rake" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,12 +27,18 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/lib/tasks" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="project.settings.patched" value="true" />
     <property name="settings.editor.selected.configurable" value="configurable.group.appearance" />
   </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/lib/tasks" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SpringUtil" SPRING_PRE_LOADER_OPTION="true" RAKE_SPRING_PRE_LOADER_OPTION="false" RAILS_SPRING_PRE_LOADER_OPTION="false" />
   <component name="SvnConfiguration">
     <configuration />
@@ -107,21 +117,33 @@
       <workItem from="1592945798637" duration="42000" />
       <workItem from="1592945900085" duration="636000" />
       <workItem from="1593009343646" duration="1381000" />
-      <workItem from="1593020689430" duration="9752000" />
+      <workItem from="1593020689430" duration="10743000" />
+      <workItem from="1594332110597" duration="1373000" />
+      <workItem from="1594333729359" duration="113000" />
+      <workItem from="1594334220239" duration="818000" />
+      <workItem from="1597158150489" duration="4899000" />
+      <workItem from="1597691372204" duration="587000" />
+      <workItem from="1597758159719" duration="610000" />
+      <workItem from="1598302124870" duration="2514000" />
+      <workItem from="1598454387129" duration="2625000" />
+      <workItem from="1598900121434" duration="1707000" />
+      <workItem from="1599059280124" duration="586000" />
+      <workItem from="1599145112738" duration="1152000" />
+      <workItem from="1599581344905" duration="1324000" />
+      <workItem from="1600098190339" duration="1734000" />
+      <workItem from="1603733756462" duration="2058000" />
+      <workItem from="1604020992799" duration="60000" />
+      <workItem from="1604605804485" duration="1260000" />
+      <workItem from="1605125898780" duration="21000" />
+      <workItem from="1609364557747" duration="5065000" />
+      <workItem from="1611349875057" duration="10723000" />
+      <workItem from="1611963510851" duration="1141000" />
+
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="1" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="746" y="473" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1584473148893">
-      <screen x="0" y="23" width="2560" height="1577" />
-    </state>
-    <state x="746" y="473" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.2560.1577/-1920.343.1920.1057/2560.127.2560.1417@0.23.2560.1577" timestamp="1584473148893" />
-    <state x="3450" y="529" width="667" height="486" key="find.popup" timestamp="1591217260887">
-      <screen x="2560" y="127" width="2560" height="1417" />
-    </state>
-    <state x="3450" y="529" width="667" height="486" key="find.popup/2560.127.2560.1417/0.23.2560.1577/-1920.343.1920.1057@2560.127.2560.1417" timestamp="1591217260887" />
+    <option name="version" value="3" />
+
   </component>
 </project>
