@@ -302,9 +302,14 @@ namespace :db do
   def create_environments(admin, app)
     Rails.logger.info("db:create_environments")
 
+    Rails.logger.info("db:check if hstore extention exists")
+
     `psql -h localhost -U#{admin} template1 -c "select 1 from pg_extension where extname='hstore'"`
     result = $?.success?
-    `psql -h localhost -U#{admin} template1 -c 'CREATE EXTENSION hstore'` unless result
+    unless result
+      Rails.logger.info("db:create hstore extention")
+    `psql -h localhost -U#{admin} template1 -c 'CREATE EXTENSION hstore'`
+    end
 
 
     dev = OpenStruct.new ({shell_name: "Novel", database: "", user: "", pwd: "", })
