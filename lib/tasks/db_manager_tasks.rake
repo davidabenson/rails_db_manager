@@ -302,6 +302,11 @@ namespace :db do
   def create_environments(admin, app)
     Rails.logger.info("db:create_environments")
 
+    `psql -h localhost -U#{admin} template1 -c "select 1 from pg_extension where extname='hstore'"`
+    result = $?.success?
+    `psql -h localhost -U#{admin} template1 -c 'CREATE EXTENSION hstore'` unless result
+
+
     dev = OpenStruct.new ({shell_name: "Novel", database: "", user: "", pwd: "", })
     unit = OpenStruct.new ({shell_name: "Novel", database: "", user: "", pwd: "", })
     test = OpenStruct.new ({shell_name: "Grass", database: "", user: "", pwd: "", })
@@ -445,15 +450,6 @@ namespace :db do
   end
 
   def create_schema(admin, user, database)
-
-    project_status_type_id  = ActiveRecord::Base.connection.execute("SELECT id FROM type where name = 'ProjectStatusType'").first[0]
-
-    `psql -h localhost -U#{admin} template1 -c "select 1 from pg_extension where extname='hstore'"`
-    result = $?.success?
-
-
-    `psql -h localhost -U#{admin} template1 -c 'CREATE EXTENSION hstore'` unless result
-
 
     Rails.logger.info("DB:: Drop Schema")
     `psql -h localhost -U#{user} -d #{database} -c 'DROP SCHEMA IF EXISTS uss CASCADE'`
