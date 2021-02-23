@@ -10,6 +10,8 @@ namespace :db do
     user = "uss_#{args.app}_#{args.env}"
 
     Rails.logger.info("-----------------------")
+    puts "CREATE EXTENTION hstore;"
+
     puts "GRANT CONNECT ON DATABASE uss_bts_prod TO uss_nwtc_prod_reader;"
 
     puts "-- **** Rset after database is created ****"
@@ -324,7 +326,7 @@ namespace :db do
 
     # update .pgpqass with new passwords, if missing
     `grep -q  "##{app}" ~/.pgpass`; result = $?.success?
-    if !result
+    unless result
       `echo "##{app}" >> ~/.pgpass`
 
       environments.each do |key, e|
@@ -444,9 +446,17 @@ namespace :db do
 
   def create_schema(admin, user, database)
 
+    project_status_type_id  = ActiveRecord::Base.connection.execute("SELECT id FROM type where name = 'ProjectStatusType'").first[0]
+
+    `psql -h localhost -U#{admin} template1 -c "select 1 from pg_extension where extname='hstore'"`
+    result = $?.success?
+
+
+    `psql -h localhost -U#{admin} template1 -c 'CREATE EXTENSION hstore'` unless result
+
+
     Rails.logger.info("DB:: Drop Schema")
     `psql -h localhost -U#{user} -d #{database} -c 'DROP SCHEMA IF EXISTS uss CASCADE'`
-
     Rails.logger.info("DB:: Create Schema")
     `psql -h localhost -U#{user} -d #{database} -c 'CREATE SCHEMA uss'`
     Rails.logger.info("DB:: Add Grants")
