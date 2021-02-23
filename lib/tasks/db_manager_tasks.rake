@@ -305,7 +305,7 @@ namespace :db do
     Rails.logger.info("db:check if hstore extention exists")
 
     result = `psql -tAc "select 1 from pg_extension where extname='hstore'" template1 `
-    unless result == '1\n'
+    if !(result == '1\n')
       Rails.logger.info("db:create hstore extention")
     `psql -h localhost -U#{admin} template1 -c 'CREATE EXTENSION hstore'`
     end
