@@ -331,12 +331,12 @@ namespace :db do
 
     #create users
     environments.each do |key, e|
-      `psql -U #{admin}  -d postgres -tc "SELECT 1 FROM pg_user WHERE usename = '#{e.user}'" | grep -q 1 || psql -U #{admin}  -d postgres -c "CREATE USER #{e.user} WITH ENCRYPTED PASSWORD '#{e.pwd}'"`
+      `psql -U #{admin}  -d postgres -tc "SELECT 1 FROM pg_user WHERE username = '#{e.user}'" | grep -q 1 || psql -U #{admin}  -d postgres -c "CREATE USER #{e.user} WITH ENCRYPTED PASSWORD '#{e.pwd}'"`
     end
 
     #create bi reader users
     environments.each do |key, e|
-      `psql -U #{admin}  -d postgres -tc "SELECT 1 FROM pg_user WHERE usename = '#{e.user}_reader'" | grep -q 1 || psql -U #{admin}  -d postgres -c "CREATE USER #{e.user_reader} WITH ENCRYPTED PASSWORD '#{e.pwd}'"`
+      `psql -U #{admin}  -d postgres -tc "SELECT 1 FROM pg_user WHERE username = '#{e.user}_reader'" | grep -q 1 || psql -U #{admin}  -d postgres -c "CREATE USER #{e.user}_reader WITH ENCRYPTED PASSWORD '#{e.pwd}'"`
     end
 
 

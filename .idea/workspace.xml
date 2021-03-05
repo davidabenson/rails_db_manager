@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="079e0830-b3ab-4548-b4fe-b45fe3b1e85b" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/lib/db_manager_tasks.rake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/tasks/db_manager_tasks.rake" beforeDir="false" afterPath="$PROJECT_DIR$/lib/tasks/db_manager_tasks.rake" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,7 +24,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/lib" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/lib/tasks" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
@@ -32,6 +33,7 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/lib/tasks" />
       <recent name="$PROJECT_DIR$/lib" />
     </key>
   </component>
@@ -122,15 +124,5 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="2" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="746" y="473" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1584473148893">
-      <screen x="0" y="23" width="2560" height="1577" />
-    </state>
-    <state x="746" y="473" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.2560.1577/-1920.343.1920.1057/2560.127.2560.1417@0.23.2560.1577" timestamp="1584473148893" />
-    <state x="3450" y="529" width="667" height="486" key="find.popup" timestamp="1591217260887">
-      <screen x="2560" y="127" width="2560" height="1417" />
-    </state>
-    <state x="3450" y="529" width="667" height="486" key="find.popup/2560.127.2560.1417/0.23.2560.1577/-1920.343.1920.1057@2560.127.2560.1417" timestamp="1591217260887" />
   </component>
 </project>
