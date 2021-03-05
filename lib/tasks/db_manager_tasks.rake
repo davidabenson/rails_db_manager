@@ -468,7 +468,7 @@ namespace :db do
     Rails.logger.info("DB:: Drop Schema")
     `psql -h localhost -U#{user} -d #{database} -c 'DROP SCHEMA IF EXISTS uss CASCADE'`
 
-    Rails.logger.info("DB:: Create Schema")
+    Rails.logger.info("DB:: Create Schema uss")
     `psql -h localhost -U#{user} -d #{database} -c 'CREATE SCHEMA uss'`
 
     Rails.logger.info("DB:: Add Grants")
@@ -479,6 +479,7 @@ namespace :db do
 
     Rails.logger.info("DB:: reader account reset")
     `psql -h localhost -U#{user} -d #{database} -c 'DROP SCHEMA IF EXISTS bi CASCADE'`
+    Rails.logger.info("DB:: Create Schema uss bi")
     `psql -h localhost -U#{user} -d #{database} -c 'CREATE SCHEMA bi'`
     `psql -h localhost -U#{user} -d #{database} -c 'GRANT USAGE ON SCHEMA bi to #{user}_reader'`
     `psql -h localhost -U#{user} -d #{database} -c 'GRANT SELECT ON ALL TABLES IN SCHEMA bi TO #{user}_reader'`
