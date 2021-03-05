@@ -9,28 +9,34 @@ namespace :db do
     database = "uss_#{args.app}_#{args.env}"
     user = "uss_#{args.app}_#{args.env}"
 
-    Rails.logger.info("-----------------------")
-    puts "GRANT CONNECT ON DATABASE uss_bts_prod TO uss_nwtc_prod_reader;"
+    puts "-----------------------"
 
-    puts "-- **** Rset after database is created ****"
-    puts "DROP SCHEMA IF EXISTS uss CASCADE;"
-    puts "CREATE SCHEMA uss;"
-    puts "GRANT ALL PRIVILEGES ON SCHEMA uss TO #{user};"
+    puts "CREATE EXTENTION hstore;"
+
+    puts("DB:: Drop Schema")
+    puts("DROP SCHEMA IF EXISTS uss CASCADE;")
+    puts("CREATE SCHEMA uss;")
+    puts ""
+    puts "GRANT CONNECT ON DATABASE #{database} TO #{user};"
+    puts "GRANT CONNECT ON DATABASE #{database} TO #{user}_reader;"
+    puts ""
+    puts "-- **** Reset after database is created ****"
     puts "ALTER DEFAULT PRIVILEGES IN SCHEMA uss GRANT SELECT,INSERT,UPDATE,DELETE ON TABLES TO #{user};"
     puts "GRANT SELECT,INSERT,UPDATE,DELETE,TRIGGER ON ALL TABLES IN SCHEMA uss TO #{user};"
     puts "GRANT TRIGGER ON All TABLES IN SCHEMA public to #{user};"
     puts "GRANT TRIGGER ON All TABLES IN SCHEMA uss to #{user};"
-
+    puts ""
     puts "-- reader account reset"
     puts "GRANT USAGE ON SCHEMA uss to #{user}_reader;"
     puts "GRANT SELECT ON ALL TABLES IN SCHEMA uss TO #{user}_reader;"
-    puts "GRANT SELECT ON ALL SEQUENCES IN SCHEMA public TO uss_nwtc_prod_reader;"
+    puts "GRANT SELECT ON ALL SEQUENCES IN SCHEMA public TO #{user}_reader;"
     puts "GRANT SELECT ON ALL SEQUENCES IN SCHEMA uss TO #{user}_reader;"
     puts "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO #{user}_reader;"
     puts "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON SEQUENCES TO #{user}_reader;"
+    puts "DB:: Set search path"
+    puts "ALTER DATABASE #{database} SET SEARCH_PATH TO uss, public"
 
-
-    Rails.logger.info("-----------------------")
+    puts "-----------------------"
   end
 
 
@@ -300,6 +306,15 @@ namespace :db do
   def create_environments(admin, app)
     Rails.logger.info("db:create_environments")
 
+    Rails.logger.info("db:check if hstore extention exists")
+
+    result = `psql -tAc "select 1 from pg_extension where extname='hstore'" template1 `
+    if !(result.first == "1")
+      Rails.logger.info("db:create hstore extention")
+    `psql -h localhost -U#{admin} template1 -c 'CREATE EXTENSION hstore'`
+    end
+
+
     dev = OpenStruct.new ({shell_name: "Novel", database: "", user: "", pwd: "", })
     unit = OpenStruct.new ({shell_name: "Novel", database: "", user: "", pwd: "", })
     test = OpenStruct.new ({shell_name: "Grass", database: "", user: "", pwd: "", })
@@ -319,12 +334,18 @@ namespace :db do
       `psql -U #{admin}  -d postgres -tc "SELECT 1 FROM pg_user WHERE usename = '#{e.user}'" | grep -q 1 || psql -U #{admin}  -d postgres -c "CREATE USER #{e.user} WITH ENCRYPTED PASSWORD '#{e.pwd}'"`
     end
 
+    #create bi reader users
+    environments.each do |key, e|
+      `psql -U #{admin}  -d postgres -tc "SELECT 1 FROM pg_user WHERE usename = '#{e.user}_reader'" | grep -q 1 || psql -U #{admin}  -d postgres -c "CREATE USER #{e.user_reader} WITH ENCRYPTED PASSWORD '#{e.pwd}'"`
+    end
+
+
 
     shell_envs = {"dev": "Novel", "test": "Grass", "stage": "Ocean", "prod": "Red Sands"}
 
     # update .pgpqass with new passwords, if missing
     `grep -q  "##{app}" ~/.pgpass`; result = $?.success?
-    if !result
+    unless result
       `echo "##{app}" >> ~/.pgpass`
 
       environments.each do |key, e|
@@ -449,11 +470,20 @@ namespace :db do
 
     Rails.logger.info("DB:: Create Schema")
     `psql -h localhost -U#{user} -d #{database} -c 'CREATE SCHEMA uss'`
+
     Rails.logger.info("DB:: Add Grants")
-    `psql -h localhost -U#{user} -d #{database} -c 'GRANT ALL PRIVILEGES ON SCHEMA uss TO #{user}, uss_admin'`
     `psql -h localhost -U#{user} -d #{database} -c 'ALTER DEFAULT PRIVILEGES IN SCHEMA uss GRANT SELECT,INSERT,UPDATE,DELETE ON TABLES TO #{user}'`
     `psql -h localhost -U#{user} -d #{database} -c 'GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA uss TO #{user}'`
-    `psql -h localhost -U#{user} -d #{database} -c 'GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA uss TO #{user}'`
+    `psql -h localhost -U#{user} -d #{database} -c 'GRANT TRIGGER ON All TABLES IN SCHEMA public to #{user}'`
+    `psql -h localhost -U#{user} -d #{database} -c 'GRANT TRIGGER ON All TABLES IN SCHEMA uss to #{user}'`
+
+    Rails.logger.info("DB:: reader account reset")
+    `psql -h localhost -U#{user} -d #{database} -c 'DROP SCHEMA IF EXISTS bi CASCADE'`
+    `psql -h localhost -U#{user} -d #{database} -c 'CREATE SCHEMA bi'`
+    `psql -h localhost -U#{user} -d #{database} -c 'GRANT USAGE ON SCHEMA bi to #{user}_reader'`
+    `psql -h localhost -U#{user} -d #{database} -c 'GRANT SELECT ON ALL TABLES IN SCHEMA bi TO #{user}_reader'`
+    `psql -h localhost -U#{user} -d #{database} -c 'GRANT SELECT ON ALL SEQUENCES IN SCHEMA bi TO #{user}_reader'`
+
     Rails.logger.info("DB:: Set search path")
     `psql -h localhost -U #{admin} -d postgres -c 'ALTER DATABASE #{database} SET SEARCH_PATH TO uss, public'`
   end
