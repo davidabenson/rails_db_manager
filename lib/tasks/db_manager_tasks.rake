@@ -370,6 +370,11 @@ namespace :db do
           `echo "#{host}:5432:#{e.user}:#{e.database}:UpdateWithAWSPassword" >> ~/.pgpass`
         end
       end
+
+      #local unit tests need superuser
+      # ALTER USER uss_ehs_test WITH SUPERUSER;
+    `psql -U #{admin} -d postgres -tc "ALTER USER #{test.user} WITH SUPERUSER`
+
     end
 
     #
@@ -524,7 +529,7 @@ namespace :db do
     # Get production data locally
     Rails.logger.debug("Backup Production Database")
 
-    `pg_dump --no-owner --no-acl -Z7 -Fc --exclude-table-data session --exclude-table-data event_log --exclude-table-data version --exclude-table _old_version --schema=uss -h#{host} -U#{user} #{database} > #{backup_file}`
+    `pg_dump --no-owner --no-acl -Z7 -Fc --exclude-table-data session --exclude-table-data event_log --exclude-table-data version --exclude-table _old_version  -h#{host} -U#{user} #{database} > #{backup_file}`
 
   end
 
